@@ -1,150 +1,99 @@
-"use strict";
+function getWeather() {
+    const apiKey = '3bb9ebf8f59f055b1d13b54c394b03fa';
+    const city = document.getElementById('city').value;
 
-const API = "a75c9a99189c745abde0194cc690ec7e";
+    if (!city) {
+        alert('Please enter a city');
+        return;
+    }
 
-const dayEl = document.querySelector(".default_day");
-const dateEl = document.querySelector(".default_date");
-const btnEl = document.querySelector(".btn_search");
-const inputEl = document.querySelector(".input_field");
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
 
-const iconsContainer = document.querySelector(".icons");
-const dayInfoEl = document.querySelector(".day_info");
-const listContentEl = document.querySelector(".list_content ul");
+    fetch(currentWeatherUrl)
+        .then(response => response.json())
+        .then(data => {
+            displayWeather(data);
+        })
+        .catch(error => {
+            console.error('Error fetching current weather data:', error);
+            alert('Error fetching current weather data. Please try again.');
+        });
 
-const days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+    fetch(forecastUrl)
+        .then(response => response.json())
+        .then(data => {
+            displayHourlyForecast(data.list);
+        })
+        .catch(error => {
+            console.error('Error fetching hourly forecast data:', error);
+            alert('Error fetching hourly forecast data. Please try again.');
+        });
+}
 
-// display the day
-const day = new Date();
-const dayName = days[day.getDay()];
-dayEl.textContent = dayName;
+function displayWeather(data) {
+    const tempDivInfo = document.getElementById('temp-div');
+    const weatherInfoDiv = document.getElementById('weather-info');
+    const weatherIcon = document.getElementById('weather-icon');
+    const hourlyForecastDiv = document.getElementById('hourly-forecast');
 
-// display date
-let month = day.toLocaleString("default", { month: "long" });
-let date = day.getDate();
-let year = day.getFullYear();
+    // Clear previous content
+    weatherInfoDiv.innerHTML = '';
+    hourlyForecastDiv.innerHTML = '';
+    tempDivInfo.innerHTML = '';
 
-console.log();
-dateEl.textContent = date + " " + month + " " + year;
-
-// add event
-btnEl.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  // check empty value
-  if (inputEl.value !== "") {
-    const Search = inputEl.value;
-    inputEl.value = "";
-    findLocation(Search);
-  } else {
-    console.log("Please Enter City or Country Name");
-  }
-});
-
-async function findLocation(name) {
-  iconsContainer.innerHTML = "";
-  dayInfoEl.innerHTML = "";
-  listContentEl.innerHTML = "";
-  try {
-    const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=${API}`;
-    const data = await fetch(API_URL);
-    const result = await data.json();
-    console.log(result);
-
-    if (result.cod !== "404") {
-      // display image content
-      const ImageContent = displayImageContent(result);
-
-      // display right side content
-      const rightSide = rightSideContent(result);
-
-      // forecast function
-      displayForeCast(result.coord.lat, result.coord.lon);
-
-      setTimeout(() => {
-        iconsContainer.insertAdjacentHTML("afterbegin", ImageContent);
-        iconsContainer.classList.add("fadeIn");
-        dayInfoEl.insertAdjacentHTML("afterbegin", rightSide);
-      }, 1500);
+    if (data.cod === '404') {
+        weatherInfoDiv.innerHTML = `<p>${data.message}</p>`;
     } else {
-      const message = `<h2 class="weather_temp">${result.cod}</h2>
-      <h3 class="cloudtxt">${result.message}</h3>`;
-      iconsContainer.insertAdjacentHTML("afterbegin", message);
+        const cityName = data.name;
+        const temperature = Math.round(data.main.temp - 273.15); // Convert to Celsius
+        const description = data.weather[0].description;
+        const iconCode = data.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+
+        const temperatureHTML = `
+            <p>${temperature}°C</p>
+        `;
+
+        const weatherHtml = `
+            <p>${cityName}</p>
+            <p>${description}</p>
+        `;
+
+        tempDivInfo.innerHTML = temperatureHTML;
+        weatherInfoDiv.innerHTML = weatherHtml;
+        weatherIcon.src = iconUrl;
+        weatherIcon.alt = description;
+
+        showImage();
     }
-  } catch (error) {}
 }
 
-// display image content and temp
-function displayImageContent(data) {
-  return `<img src="https://openweathermap.org/img/wn/${
-    data.weather[0].icon
-  }@4x.png" alt="" />
-    <h2 class="weather_temp">${Math.round(data.main.temp - 275.15)}°C</h2>
-    <h3 class="cloudtxt">${data.weather[0].description}</h3>`;
+function displayHourlyForecast(hourlyData) {
+    const hourlyForecastDiv = document.getElementById('hourly-forecast');
+
+    const next24Hours = hourlyData.slice(0, 8); // Display the next 24 hours (3-hour intervals)
+
+    next24Hours.forEach(item => {
+        const dateTime = new Date(item.dt * 1000); // Convert timestamp to milliseconds
+        const hour = dateTime.getHours();
+        const temperature = Math.round(item.main.temp - 273.15); // Convert to Celsius
+        const iconCode = item.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+
+        const hourlyItemHtml = `
+            <div class="hourly-item">
+                <span>${hour}:00</span>
+                <img src="${iconUrl}" alt="Hourly Weather Icon">
+                <span>${temperature}°C</span>
+            </div>
+        `;
+
+        hourlyForecastDiv.innerHTML += hourlyItemHtml;
+    });
 }
 
-// display the right side content
-function rightSideContent(result) {
-  return `<div class="content">
-          <p class="title">NAME</p>
-          <span class="value">${result.name}</span>
-        </div>
-        <div class="content">
-          <p class="title">TEMP</p>
-          <span class="value">${Math.round(result.main.temp - 275.15)}°C</span>
-        </div>
-        <div class="content">
-          <p class="title">HUMIDITY</p>
-          <span class="value">${result.main.humidity}%</span>
-        </div>
-        <div class="content">
-          <p class="title">WIND SPEED</p>
-          <span class="value">${result.wind.speed} Km/h</span>
-        </div>`;
-}
-
-async function displayForeCast(lat, long) {
-  const ForeCast_API = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${API}`;
-  const data = await fetch(ForeCast_API);
-  const result = await data.json();
-  // filter the forecast
-  const uniqeForeCastDays = [];
-  const daysForecast = result.list.filter((forecast) => {
-    const forecastDate = new Date(forecast.dt_txt).getDate();
-    if (!uniqeForeCastDays.includes(forecastDate)) {
-      return uniqeForeCastDays.push(forecastDate);
-    }
-  });
-  console.log(daysForecast);
-
-  daysForecast.forEach((content, indx) => {
-    if (indx <= 3) {
-      listContentEl.insertAdjacentHTML("afterbegin", forecast(content));
-    }
-  });
-}
-
-// forecast html element data
-function forecast(frContent) {
-  const day = new Date(frContent.dt_txt);
-  const dayName = days[day.getDay()];
-  const splitDay = dayName.split("", 3);
-  const joinDay = splitDay.join("");
-
-  // console.log(dayName);
-
-  return `<li>
-  <img src="https://openweathermap.org/img/wn/${
-    frContent.weather[0].icon
-  }@2x.png" />
-  <span>${joinDay}</span>
-  <span class="day_temp">${Math.round(frContent.main.temp - 275.15)}°C</span>
-</li>`;
+function showImage() {
+    const weatherIcon = document.getElementById('weather-icon');
+    weatherIcon.style.display = 'block'; // Make the image visible once it's loaded
 }
