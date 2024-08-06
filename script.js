@@ -50,6 +50,8 @@ function displayWeather(data) {
         const description = data.weather[0].description;
         const iconCode = data.weather[0].icon;
         const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+        const humidity = data.main.humidity;
+        const windSpeed = data.wind.speed;
 
         const temperatureHTML = `
             <p>${temperature}°C</p>
@@ -58,6 +60,8 @@ function displayWeather(data) {
         const weatherHtml = `
             <p>${cityName}</p>
             <p>${description}</p>
+            <p>Humidity : <span>${humidity}%</span></p>
+            <p>Wind speed : <span>${+Math.trunc(windSpeed * 3.16)}km/h</span></p>
         `;
 
         tempDivInfo.innerHTML = temperatureHTML;
