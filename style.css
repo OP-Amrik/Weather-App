@@ -5,13 +5,14 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    /* margin: 50px; */
+    margin: 0px;
 }
 
 #weather-container {
     /* background: #8b48d7; */
     background: #f7f7f7;
     max-width: 400px;
+    max-height: 100vh;
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -25,9 +26,14 @@ h2, label, p {
     margin: 8px 0;
 }
 
+.search-box{
+    display: flex;
+    justify-content: space-between ;
+}
 input {
     width: calc(100% - 16px);
     padding: 8px;
+    margin-right: 0.5rem;
     box-sizing: border-box;
     border-radius: 10px;
     border: 1px solid white;
@@ -35,7 +41,8 @@ input {
 }
 
 button {
-    background: #debff4;
+    /* background: #debff4; */
+    background: linear-gradient(#642bff,#ff22e6);
     color: white;
     padding: 10px;
     border: none;
@@ -51,17 +58,17 @@ button:hover {
 }
 
 #temp-div p {
-    font-size: 60px;
+    font-size: 45px;
     margin-top: -30px;
 }
 
 #weather-info {
-    font-size: 20px;
+    font-size: 14px;
 }
 
 #weather-icon {
-    width: 200px;
-    height: 200px;
+    width: 170px;
+    height: 170px;
     margin: 0 auto 10px; 
     margin-bottom: 0;
     display: none;
@@ -73,11 +80,9 @@ button:hover {
     white-space: nowrap;
     display: flex;
     justify-content: space-between;
-    box-shadow: 5px 15px 32px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
-    background-color: #e2dbdb;
 }
 
 .hourly-item {
@@ -99,4 +104,18 @@ button:hover {
 #hourly-heading {
     color: #fff;
     margin-top: 10px;
+}
+
+::-webkit-scrollbar{
+    height: 5px;
+}
+
+::-webkit-scrollbar-track{
+    background: #d1e5ff;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background: linear-gradient(#642bff,#ff22e6);
+    border-radius: 10px;
 }
