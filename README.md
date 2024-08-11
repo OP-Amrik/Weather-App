@@ -1,7 +1,3 @@
-Here's a README file for your GitHub project:
-
----
-
 # Weather.io
 
 ## Project Description
@@ -17,8 +13,8 @@ Here's a README file for your GitHub project:
 
 ## Screenshots
 
-![Weather.io Screenshot](lightmode.png)
-![Weather.io Screenshot](darkmode.png)
+![Weather.io Screenshot](assets/lightmode.png)
+![Weather.io Screenshot](assets/darkmode.png)
 
 ## How to Run
 
