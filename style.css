@@ -19,7 +19,7 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
-} 
+}
 
 h2,
 label,
@@ -125,14 +125,14 @@ button:hover {
 /* Responsive part */
 
 @media screen and (max-width: 600px) {
-    #weather-container {
-        width: 80%;
-    }
+  #weather-container {
+    width: 80%;
+  }
 
-    #hourly-forecast{
-        padding-left: 0px;
-        padding-right: 0px; 
-        padding-top: 0px;
-        padding-bottom: 10px;
-    }
+  #hourly-forecast {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 10px;
+  }
 }
