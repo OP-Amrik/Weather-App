@@ -46,7 +46,7 @@
 
 ## Deployment
 
-The project is deployed and can be accessed [https://aurus18.github.io/Weather-App/].
+The project is deployed and can be accessed [ https://op-amrik.github.io/Weather-App/].
 
 ## Technologies Used
 
